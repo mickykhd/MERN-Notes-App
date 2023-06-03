@@ -15,7 +15,18 @@ const Notes = () => {
 
   const { token } = useSelector((state) => state.notesMain);
 
-  console.log(token);
+  useEffect(() => {
+    if (typeof input === "string" && input.length) {
+      const debounceTimout = setTimeout(() => {
+        // update request logic
+      }, 1000);
+
+      return () => {
+        clearTimeout(debounceTimout);
+      };
+    }
+  }, [input]);
+
   const navigate = useNavigate();
   const handleNotesStatus = () => {
     if (!token) {
@@ -114,6 +125,7 @@ const Notes = () => {
           {notes.map((note) => {
             return (
               <List
+                key={note._id}
                 id={note._id}
                 note={note.note}
                 setUpdateUI={setUpdateUI}

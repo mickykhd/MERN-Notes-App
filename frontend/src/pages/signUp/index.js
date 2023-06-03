@@ -34,13 +34,13 @@ const Signup = () => {
       });
       const info = await data.json();
       setErrorStatus(data.status);
-      console.log(data);
+
       setInput({ name: "", email: "", password: "" });
     } catch (error) {
       console.log(error);
     }
   };
-  console.log(errorStatus);
+
   return (
     <Wrapper>
       <div className="login-container">

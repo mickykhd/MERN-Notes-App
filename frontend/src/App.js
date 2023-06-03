@@ -18,11 +18,6 @@ import "./App.css";
 const App = () => {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.notesMain);
-  console.log(data);
-
-  if (data.isLoading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="main-app">

@@ -16,7 +16,7 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const data = useSelector((state) => state.notesMain);
-  console.log(data);
+
   const navigate = useNavigate();
   const handleLogin = async () => {
     if (!input.email || !input.password) {
@@ -34,7 +34,7 @@ const Login = () => {
       });
       const info = await data.json();
       dispatch(handleChange({ name: "token", value: info }));
-      console.log(info);
+
       localStorage.setItem("tokenDetails", JSON.stringify(info));
 
       if (data.status === 400) {
