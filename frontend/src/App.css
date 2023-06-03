@@ -1,0 +1,11 @@
+.main-app {
+  /* padding: 1rem; */
+}
+.icon-remove {
+  color: red;
+  font-size: 2rem;
+}
+.icon-edit {
+  color: #e7950a;
+  font-size: 2rem;
+}

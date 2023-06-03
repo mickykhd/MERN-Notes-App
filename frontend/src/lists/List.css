@@ -1,0 +1,32 @@
+.notes-list {
+  display: flex;
+  justify-content: center;
+  /* gap: 4rem; */
+  padding: 2px;
+  word-break: break-all;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+}
+.list-main {
+  resize: none;
+  outline: none;
+  border: 2px solid black;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px 1px black;
+  font-size: 16px;
+  padding: 5px;
+}
+
+.notes-list textarea {
+  resize: none;
+  height: 100%;
+  padding: 1rem;
+  border: none;
+  font-size: 16px;
+}
+
+.notes-list textarea:focus {
+  outline: none;
+  border: none;
+}

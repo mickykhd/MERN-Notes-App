@@ -1,0 +1,16 @@
+.hompage-title {
+  width: 25rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-radius: 10px;
+  background-color: #00afff;
+  color: black;
+  box-shadow: 0px 0px 9px 2px #00afff;
+  padding: 1rem;
+}
+.hompage-container {
+  display: flex;
+  justify-content: center;
+}
