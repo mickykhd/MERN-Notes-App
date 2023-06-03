@@ -1,51 +1,37 @@
-const UserModel = require("../models/userModel");
+const User = require("../models/userModel");
 const { StatusCodes } = require("http-status-codes");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 //Controller for user sign up
 const register = async (req, res) => {
-  const { name, email, password } = req.body;
-  const user = await user.create({ ...req.body });
+  const user = await User.create({ ...req.body });
   const token = user.createJWT();
-
-  // Check for duplicate email
-  const existingUser = await UserModel.findOne({ email });
-  if (existingUser) {
-    return res
-      .status(StatusCodes.CONFLICT)
-      .json({ msg: "Email already exists" });
-  }
-
   res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token });
 };
 
-//Controller for user log in
-
 const login = async (req, res) => {
   const { email, password } = req.body;
+
   if (!email || !password) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: "All fields are required" });
+    throw new BadRequestError("Please provide email and password");
   }
-
-  const user = await UserModel.findOne({ email });
-
+  const user = await User.findOne({ email });
   if (!user) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: "Invalid credentials" });
+    throw new UnauthenticatedError("Invalid Credentials");
   }
-
-  const isPasswordCorrect = await bcrypt.compare(password, user.password);
+  const isPasswordCorrect = await user.comparePassword(password);
   if (!isPasswordCorrect) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: "Invalid credentials" });
+    throw new UnauthenticatedError("Invalid Credentials");
   }
+  // compare password
   const token = user.createJWT();
   res.status(StatusCodes.OK).json({ user: { name: user.name }, token });
+};
+
+module.exports = {
+  register,
+  login,
 };
 
 module.exports = {
