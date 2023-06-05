@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Wrapper from "../../components/wrapper/Wrapper";
 import "./styles.css";
+import useAutoSave from "../../hooks/useAutoSave";
 
 const Notes = () => {
   const [input, setInput] = useState("");
@@ -14,18 +15,6 @@ const Notes = () => {
   const [updateId, setUpdateId] = useState(null);
 
   const { token } = useSelector((state) => state.notesMain);
-
-  useEffect(() => {
-    if (typeof input === "string" && input.length) {
-      const debounceTimout = setTimeout(() => {
-        // update request logic
-      }, 1000);
-
-      return () => {
-        clearTimeout(debounceTimout);
-      };
-    }
-  }, [input]);
 
   const navigate = useNavigate();
   const handleNotesStatus = () => {
@@ -57,7 +46,6 @@ const Notes = () => {
   useEffect(() => {
     handleNotesStatus();
   }, [token]);
-
   const addNote = async () => {
     try {
       const response = await fetch(`${baseURL}/save`, {
@@ -79,12 +67,40 @@ const Notes = () => {
       console.error(error);
     }
   };
+
+  const saveNote = async (value) => {
+    try {
+      if (updateId) {
+        // Update an existing note
+        await axios.put(
+          `${baseURL}/update/${updateId}`,
+          { note: value },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      } else {
+        // Add a new note
+        await fetch(`${baseURL}/save`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ note: value }),
+        });
+      }
+      setUpdateUI((prevState) => !prevState);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useAutoSave(input, saveNote);
+
   const updateMode = (id, text) => {
     console.log(text);
     setInput(text);
     setUpdateId(id);
   };
-
   const updateNote = () => {
     axios
       .put(
@@ -114,7 +130,6 @@ const Notes = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
             ></textarea>
-
             <button type="submit" onClick={updateId ? updateNote : addNote}>
               {updateId ? "Update Note" : "Add Note"}
             </button>
