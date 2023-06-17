@@ -3,11 +3,14 @@ import { BsTrash } from "react-icons/bs";
 import { BiEditAlt } from "react-icons/bi";
 import axios from "axios";
 import { baseURL } from "../utils/constant";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+
 import "./List.css";
+import { handleChange } from "../mainSlice/mainSlice";
 
 const List = ({ id, note, setUpdateUI, updateMode }) => {
   const { token } = useSelector((state) => state.notesMain);
+  const dispatch = useDispatch();
 
   const removeNote = async () => {
     try {
@@ -27,15 +30,17 @@ const List = ({ id, note, setUpdateUI, updateMode }) => {
     }
   };
 
+  const handleEdit = () => {
+    dispatch(handleChange({ name: "editmode", value: true }));
+    updateMode(id, note);
+  };
+
   return (
     <div className="list-main">
       <div className="notes-list">
         <textarea name="" id="" value={note} readOnly></textarea>
         <div className="icon_holder">
-          <BiEditAlt
-            className="icon-edit"
-            onClick={() => updateMode(id, note)}
-          />
+          <BiEditAlt className="icon-edit" onClick={handleEdit} />
           <BsTrash className="icon-remove" onClick={removeNote} />
         </div>
       </div>

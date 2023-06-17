@@ -1,20 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { baseURL } from "../../utils/constant";
 import List from "../../lists/List";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Wrapper from "../../components/wrapper/Wrapper";
 import "./styles.css";
 import useAutoSave from "../../hooks/useAutoSave";
+import { handleChange } from "../../mainSlice/mainSlice";
 
 const Notes = () => {
   const [input, setInput] = useState("");
+  const [previousValue, setPreviousValue] = useState("");
   const [notes, setNotes] = useState([]);
   const [updateUI, setUpdateUI] = useState(false);
   const [updateId, setUpdateId] = useState(null);
+  const [shouldRunFunction, setShouldRunFunction] = useState(false);
+  const inputRef = useRef(null);
+  const dispatch = useDispatch();
 
-  const { token } = useSelector((state) => state.notesMain);
+  const { token, editmode } = useSelector((state) => state.notesMain);
 
   const navigate = useNavigate();
   const handleNotesStatus = () => {
@@ -94,13 +99,6 @@ const Notes = () => {
     }
   };
 
-  useAutoSave(input, saveNote);
-
-  const updateMode = (id, text) => {
-    console.log(text);
-    setInput(text);
-    setUpdateId(id);
-  };
   const updateNote = () => {
     axios
       .put(
@@ -112,9 +110,54 @@ const Notes = () => {
         console.log(res.data);
         setUpdateUI((prevState) => !prevState);
         setUpdateId(null);
-        setInput("");
       });
   };
+
+  // useAutoSave(input, editmode ? updateNote : saveNote);
+
+  const updateMode = (id, text) => {
+    console.log(text);
+    setInput(text);
+    setUpdateId(id);
+  };
+
+  useEffect(() => {
+    if (inputRef.current) {
+      setPreviousValue(input);
+      setInput(inputRef.current.value);
+    }
+  }, [inputRef.current?.value]);
+
+  // useEffect(() => {
+  //   const test3 = setTimeout(() => {
+  //     setShouldRunFunction(false);
+  //   }, 3000);
+
+  //   return () => clearTimeout(test3);
+  // }, [shouldRunFunction]);
+
+  useEffect(() => {
+    const test1 = setTimeout(() => {
+      if (!shouldRunFunction) return;
+      if (previousValue === input) {
+        return;
+      }
+      if (previousValue !== input) {
+        saveNote(input);
+        setInput("");
+        setPreviousValue("");
+        dispatch(handleChange({ name: "editmodeF" }));
+      }
+      if (updateId) {
+        updateNote();
+        setPreviousValue("");
+        setInput("");
+      }
+    }, 3000);
+
+    return () => clearTimeout(test1);
+  }, [input]);
+
   return (
     <Wrapper>
       <div className="notes-main">
@@ -123,16 +166,20 @@ const Notes = () => {
           <div className="notes-form">
             <textarea
               name=""
+              ref={inputRef}
               id=""
               cols="30"
               rows="10"
               className="notes-textarea"
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => {
+                setInput(e.target.value);
+                setShouldRunFunction(true);
+              }}
             ></textarea>
-            <button type="submit" onClick={updateId ? updateNote : addNote}>
+            {/* <button type="submit" onClick={updateId ? updateNote : addNote}>
               {updateId ? "Update Note" : "Add Note"}
-            </button>
+            </button> */}
           </div>
         </div>
 

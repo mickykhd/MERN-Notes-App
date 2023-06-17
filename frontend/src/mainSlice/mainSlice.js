@@ -5,6 +5,7 @@ const initialState = {
   isLoading: false,
   token: "",
   userName: "",
+  editmode: false,
 };
 
 const mainSlice = createSlice({
@@ -35,6 +36,12 @@ const mainSlice = createSlice({
       }
       if (name === "loginLoad") {
         state.isLoading = value;
+      }
+      if (name === "editmode") {
+        state.editmode = true;
+      }
+      if (name === "editmodeF") {
+        state.editmode = false;
       }
     },
   },

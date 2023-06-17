@@ -1,6 +1,19 @@
 import { useState, useEffect, useRef } from "react";
 
-// Custom hook to debounce a value
+const useAutoSave = (value, callback) => {
+  const debouncedValue = useDebounce(value, 1000);
+
+  const prevValueRef = useRef(value);
+
+  useEffect(() => {
+    if (debouncedValue !== prevValueRef.current) {
+      callback(debouncedValue);
+      prevValueRef.current = debouncedValue;
+    }
+  }, [debouncedValue, callback]);
+};
+
+// Debounce hook implementation
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -15,19 +28,6 @@ const useDebounce = (value, delay) => {
   }, [value, delay]);
 
   return debouncedValue;
-};
-
-const useAutoSave = (value, callback) => {
-  const debouncedValue = useDebounce(value, 1000);
-
-  const prevValue = useRef(value);
-
-  useEffect(() => {
-    if (debouncedValue !== prevValue.current) {
-      callback(debouncedValue);
-      prevValue.current = debouncedValue;
-    }
-  }, [debouncedValue, callback]);
 };
 
 export default useAutoSave;
