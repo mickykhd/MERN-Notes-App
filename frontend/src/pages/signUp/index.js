@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { handleChange } from "../../mainSlice/mainSlice";
 import Wrapper from "../../components/wrapper/Wrapper";
 const Signup = () => {
   const [input, setInput] = useState({

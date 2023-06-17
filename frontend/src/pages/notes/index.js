@@ -5,9 +5,8 @@ import List from "../../lists/List";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Wrapper from "../../components/wrapper/Wrapper";
-import "./styles.css";
-import useAutoSave from "../../hooks/useAutoSave";
 import { handleChange } from "../../mainSlice/mainSlice";
+import "./styles.css";
 
 const Notes = () => {
   const [input, setInput] = useState("");
@@ -19,7 +18,7 @@ const Notes = () => {
   const inputRef = useRef(null);
   const dispatch = useDispatch();
 
-  const { token, editmode } = useSelector((state) => state.notesMain);
+  const { token } = useSelector((state) => state.notesMain);
 
   const navigate = useNavigate();
   const handleNotesStatus = () => {
@@ -113,8 +112,6 @@ const Notes = () => {
       });
   };
 
-  // useAutoSave(input, editmode ? updateNote : saveNote);
-
   const updateMode = (id, text) => {
     console.log(text);
     setInput(text);
@@ -127,14 +124,6 @@ const Notes = () => {
       setInput(inputRef.current.value);
     }
   }, [inputRef.current?.value]);
-
-  // useEffect(() => {
-  //   const test3 = setTimeout(() => {
-  //     setShouldRunFunction(false);
-  //   }, 3000);
-
-  //   return () => clearTimeout(test3);
-  // }, [shouldRunFunction]);
 
   useEffect(() => {
     const test1 = setTimeout(() => {

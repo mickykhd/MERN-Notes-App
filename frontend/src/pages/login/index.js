@@ -15,8 +15,6 @@ const Login = () => {
 
   const dispatch = useDispatch();
 
-  const data = useSelector((state) => state.notesMain);
-
   const navigate = useNavigate();
   const handleLogin = async () => {
     if (!input.email || !input.password) {
