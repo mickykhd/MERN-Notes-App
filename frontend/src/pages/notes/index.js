@@ -142,7 +142,7 @@ const Notes = () => {
         setPreviousValue("");
         setInput("");
       }
-    }, 3000);
+    }, 4000);
 
     return () => clearTimeout(test1);
   }, [input]);
